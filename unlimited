@@ -1,116 +1,143 @@
-if game.PlaceId == 6839171747 or 6516141723 then
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = " Gambol's Doors scripts 🚪", HidePremium = false, IntroText = "Welcome",SaveConfig = true, ConfigFolder = "Config"})
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
 
--- Values
 
--- Functions
-
+local Window = Rayfield:CreateWindow({
+	Name = "Gambol's Doors Scripts 🚪",
+	LoadingTitle = "Doors Script",
+	LoadingSubtitle = "by Gambol",
+	ConfigurationSaving = {
+		Enabled = true,
+		FolderName = nil, -- Create a custom folder for your hub/game
+		FileName = "Gambol's Hub"
+	},
+	Discord = {
+		Enabled = false,
+		Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
+		RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+	},
+	KeySystem = false, -- Set this to true to use our key system
+	KeySettings = {
+		Title = "Sirius Hub",
+		Subtitle = "Key System",
+		Note = "Join the discord (discord.gg/sirius)",
+		FileName = "Gambol Key",
+		SaveKey = true,
+		GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+		Key = "Hello"
+	}
+})
 
 
 -- Tabs
-local MainTab = Window:MakeTab({
-	Name = "Main",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
 
-local ToolsTab = Window:MakeTab({
-	Name = "Tools",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
+local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
 
-local ScriptsTab = Window:MakeTab({
-	Name = "Scripts",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
+local ToolsTab = Window:CreateTab("Tools", 4483362458) -- Title, Image
 
--- Toggles
+local ScriptsTab = Window:CreateTab("Scripts", 4483362458) -- Title, Image
 
 
--- Buttons 
+--Buttons 
 
-ToolsTab:AddButton({
+local Button = ToolsTab:CreateButton({
 	Name = "Tablet",
 	Callback = function()
-        _G.OnShop = false -- can buy on pre run shop, set to false if you dont want it at the start elevator, put at true if you want to see the table/scanner on the elevator shop.
-        _G.Price = 1 -- tablet price on shop
-        _G.Description = "" -- tablet description on shop
-         
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/DeividComSono/Scripts/main/Scanner.lua'))()
+		_G.OnShop = true -- can buy on pre run shop, set to false if you dont want it at the start elevator, put at true if you want to see the table/scanner on the elevator shop.
+		_G.Price = 1000 -- tablet price on shop
+		_G.Description = "" -- tablet description on shop
 
-  	end    
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/DeividComSono/Scripts/main/Scanner.lua'))()
+	end,
+	
+
 })
 
-ToolsTab:AddButton({
-	Name = "Dupe Plushie",
+
+local Button = ScriptsTab:CreateButton({
+	Name = "Vynixius",
 	Callback = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/GambolOfficial/Gambol-2.0/main/Duple'))()
-    end
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Doors/Loader.lua"))()
+	end,
+
+
 })
 
-MainTab:AddButton({
-	Name = "Fullbright",
+local Button = ScriptsTab:CreateButton({
+	Name = "PD Edited",
 	Callback = function()
-        local Light = game:GetService("Lighting")
+		loadstring(game:HttpGet(("https://raw.githubusercontent.com/mstudio45/poopdoors_edited/main/poopdoors_edited.lua"),true))()
+	end
 
-        function dofullbright()
-        Light.Ambient = Color3.new(1, 1, 1)
-        Light.ColorShift_Bottom = Color3.new(1, 1, 1)
-        Light.ColorShift_Top = Color3.new(1, 1, 1)
-        end
 
-        dofullbright()
-
-        Light.LightingChanged:Connect(dofullbright)
-    end
 })
 
-MainTab:AddButton({
-	Name = "Instant Interact",
-	Callback = function()
-        game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
-            fireproximityprompt(prompt)
-        end)
 
-    end
-})
-
-MainTab:AddButton({
-	Name = "Harmless Screech",
+local Button = ScriptsTab:CreateButton({
+	Name = "PoopDoors (Not recommended)",
 	Callback = function()
-        if not ScreechModule then ScreechModule = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules:FindFirstChild("Screech") end
-		ScreechModule.Parent = nil
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/zoophiliaphobic/POOPDOORS/main/script.lua'))()
 	end
 })
 
-ScriptsTab:AddButton({
-	Name = "Vynixius",
+local Button = MainTab:CreateButton({
+	Name = "Fullbright",
 	Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Doors/Loader.lua"))()
-    end
+		local Light = game:GetService("Lighting")
+
+		function dofullbright()
+			Light.Ambient = Color3.new(1, 1, 1)
+			Light.ColorShift_Bottom = Color3.new(1, 1, 1)
+			Light.ColorShift_Top = Color3.new(1, 1, 1)
+		end
+
+		dofullbright()
+
+		Light.LightingChanged:Connect(dofullbright)	end,
 })
 
-ScriptsTab:AddButton({
-	Name = "PD Edited",
+local Button = MainTab:CreateButton({
+	Name = "Instant Interact",
 	Callback = function()
-        loadstring(game:HttpGet(("https://raw.githubusercontent.com/mstudio45/poopdoors_edited/main/poopdoors_edited.lua"),true))()
-    end
+		game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
+			fireproximityprompt(prompt)
+		end)
+
+	end
 })
 
-ScriptsTab:AddButton({
-	Name = "PoopDoors (Not recommended)",
+local Button = ToolsTab:CreateButton({
+	Name = "Dupe Plushie",
 	Callback = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/zoophiliaphobic/POOPDOORS/main/script.lua'))()
-    end
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/GambolOfficial/Gambol-2.0/main/Duple'))()
+	end
 })
 
 
 
 
+--Toggles
 
 
-end
-OrionLib:Init()
+-- Notification
+
+
+-- Sliders
+
+local Slider = MainTab:CreateSlider({
+	Name = "FOV (Not Working)",
+	Range = {0, 120},
+	Increment = 10,
+	Suffix = "FOV",
+	CurrentValue = 10,
+	Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		
+		game:GetService("Workspace").CurrentCamera.FieldOfView = Value
+	end,
+})
+
+
+
+--Sections
+
+
