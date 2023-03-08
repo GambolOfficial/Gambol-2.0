@@ -1,0 +1,116 @@
+if game.PlaceId == 6839171747 or 6516141723 then
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = " Gambol's Doors scripts 🚪", HidePremium = false, IntroText = "Welcome",SaveConfig = true, ConfigFolder = "Config"})
+
+-- Values
+
+-- Functions
+
+
+
+-- Tabs
+local MainTab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local ToolsTab = Window:MakeTab({
+	Name = "Tools",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local ScriptsTab = Window:MakeTab({
+	Name = "Scripts",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+-- Toggles
+
+
+-- Buttons 
+
+ToolsTab:AddButton({
+	Name = "Tablet",
+	Callback = function()
+        _G.OnShop = false -- can buy on pre run shop, set to false if you dont want it at the start elevator, put at true if you want to see the table/scanner on the elevator shop.
+        _G.Price = 1 -- tablet price on shop
+        _G.Description = "" -- tablet description on shop
+         
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/DeividComSono/Scripts/main/Scanner.lua'))()
+
+  	end    
+})
+
+ToolsTab:AddButton({
+	Name = "Dupe Plushie",
+	Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/GambolOfficial/Gambol-2.0/main/Duple'))()
+    end
+})
+
+MainTab:AddButton({
+	Name = "Fullbright",
+	Callback = function()
+        local Light = game:GetService("Lighting")
+
+        function dofullbright()
+        Light.Ambient = Color3.new(1, 1, 1)
+        Light.ColorShift_Bottom = Color3.new(1, 1, 1)
+        Light.ColorShift_Top = Color3.new(1, 1, 1)
+        end
+
+        dofullbright()
+
+        Light.LightingChanged:Connect(dofullbright)
+    end
+})
+
+MainTab:AddButton({
+	Name = "Instant Interact",
+	Callback = function()
+        game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
+            fireproximityprompt(prompt)
+        end)
+
+    end
+})
+
+MainTab:AddButton({
+	Name = "Harmless Screech",
+	Callback = function()
+        if not ScreechModule then ScreechModule = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules:FindFirstChild("Screech") end
+		ScreechModule.Parent = nil
+	end
+})
+
+ScriptsTab:AddButton({
+	Name = "Vynixius",
+	Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Doors/Loader.lua"))()
+    end
+})
+
+ScriptsTab:AddButton({
+	Name = "PD Edited",
+	Callback = function()
+        loadstring(game:HttpGet(("https://raw.githubusercontent.com/mstudio45/poopdoors_edited/main/poopdoors_edited.lua"),true))()
+    end
+})
+
+ScriptsTab:AddButton({
+	Name = "PoopDoors (Not recommended)",
+	Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/zoophiliaphobic/POOPDOORS/main/script.lua'))()
+    end
+})
+
+
+
+
+
+
+end
+OrionLib:Init()
