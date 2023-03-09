@@ -16,15 +16,15 @@ if game.PlaceId == 6839171747 then
 			Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
 			RememberJoins = true -- Set this to false to make them join the discord every time they load it up
 		},
-		KeySystem = false, -- Set this to true to use our key system
+		KeySystem = true, -- Set this to true to use our key system
 		KeySettings = {
-			Title = "Sirius Hub",
+			Title = "Gambol's Doors Scripts 🚪",
 			Subtitle = "Key System",
-			Note = "Join the discord (discord.gg/sirius)",
+			Note = "Dm Gambol with the word (among us) to recieve the key.",
 			FileName = "Gambol Key",
 			SaveKey = true,
 			GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-			Key = "Hello"
+			Key = "PPNFMNAWLZVWAQCZMKYVJCZALSDSSXQDFAR"
 		}
 	})
 
@@ -238,7 +238,7 @@ elseif game.PlaceId == 6516141723 then
 		Image = 4483362458,
 		Actions = { -- Notification Buttons
 			Ignore = {
-				Name = "Yes",
+				Name = "✅",
 				Callback = function()
 					function message(text)
 						task.spawn(function()
