@@ -1,4 +1,7 @@
 if game.PlaceId == 6839171747 then
+	
+
+	
 	local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
 
 
@@ -16,7 +19,7 @@ if game.PlaceId == 6839171747 then
 			Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
 			RememberJoins = true -- Set this to false to make them join the discord every time they load it up
 		},
-		KeySystem = true, -- Set this to true to use our key system
+		KeySystem = false, -- Set this to true to use our key system
 		KeySettings = {
 			Title = "Gambol's Doors Scripts 🚪",
 			Subtitle = "Key System",
@@ -36,7 +39,14 @@ if game.PlaceId == 6839171747 then
 	local ToolsTab = Window:CreateTab("Tools", 4483362458) -- Title, Image
 
 	local ScriptsTab = Window:CreateTab("Scripts", 4483362458) -- Title, Image
+	
+	local CharTab = Window:CreateTab("Character", 4483362458) -- Title, Image
+
+	
+	local RoomsTab = Window:CreateTab("Rooms", 4483362458)
+	
 	local ConfigTab = Window:CreateTab("Configs", 4483362458) -- Title, Image	
+
 	
 	
 	-- TextBox
@@ -196,15 +206,6 @@ if game.PlaceId == 6839171747 then
 			Light.LightingChanged:Connect(dofullbright)	end,
 	})
 
-	local Button = MainTab:CreateButton({
-		Name = "Instant Interact",
-		Callback = function()
-			game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
-				fireproximityprompt(prompt)
-			end)
-
-		end
-	})
 
 	local Button = ToolsTab:CreateButton({
 		Name = "Dupe Plushie",
@@ -218,28 +219,95 @@ if game.PlaceId == 6839171747 then
 
 	--Toggles
 	
+
+	
+	local Toggle = RoomsTab:CreateToggle({
+		Name = "A-60 & A-120 Notifier",
+		CurrentValue = false,
+		Flag = "A60", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			if Value == true then 
+			workspace.ChildAdded:Connect(function(Obj)
+				if Obj.Name:sub(1, 1) == "A" and Obj.Name ~= "AmbushMoving" then
+						Rayfield:Notify({
+							Title = "Spawned",
+							Content = "Hide Quick!",
+							Duration = 4,
+							Image = 11419713314,
+						})
+				end
+			end)
+			workspace.ChildRemoved:Connect(function(Obj)
+				if Obj.Name:sub(1, 1) == "A" and Obj.Name ~= "AmbushMoving" then
+						Rayfield:Notify({
+							Title = "Despawned ",
+							Content = "You can leave now",
+							Duration = 4,
+							Image = 11419719540,
+						})
+				end
+			end)
+		end
+	end,
+	})
+	
+	local Toggle = RoomsTab:CreateToggle({
+		Name = "A-90 Remover",
+		CurrentValue = false,
+		Flag = "A90", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			if Value == true then
+				local Plr = game.Players.LocalPlayer
+				local ModuleScripts = {
+					MainGame = Plr.PlayerGui.MainUI.Initiator.Main_Game,
+				}
+
+
+				ModuleScripts.MainGame.RemoteListener.Modules["A90"].Name = "Baller"
+			end
+		end,
+	})
+
+	
+	
+	
+	
+	-- No Screech
+	
 	local Toggle = MainTab:CreateToggle({
 		Name = "No Screech",
 		CurrentValue = false,
-		Flag = "NoScreech", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Flag = "ScreechToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Value)
-			if Value == true then
-				if not ScreechModule then ScreechModule = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules:FindFirstChild("Screech") end
-				ScreechModule.Parent = nil
-			else
-				ScreechModule.Parent = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules
-			end
-		end
-		
+			local old
+			old = hookmetamethod(game,"__namecall",newcclosure(function(self,...)
+				local args = {...}
+				local method = getnamecallmethod()
+
+				if tostring(self) == 'Screech' and method == "FireServer" and Value == true then
+					args[1] = true
+					return old(self,unpack(args))
+				end
+				return old(self,...)
+			end))
+
+			workspace.CurrentCamera.ChildAdded:Connect(function(child)
+				if child.Name == "Screech" and Value == true then
+					child:Destroy()
+				end
+			end)
+		end,
 	})
 	
-	local Slider = MainTab:CreateSlider({
+	
+	
+	local Slider = CharTab:CreateSlider({
 		Name = "Walkspeed",
 		Range = {16, 22},
 		Increment = 1,
 		Suffix = "Walkspeed",
 		CurrentValue = 16,
-		Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Flag = "Walkspeed", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Value)
 			while true do
 				wait()
@@ -253,6 +321,47 @@ if game.PlaceId == 6839171747 then
 		Callback = function()
 			Rayfield:Destroy()		end,
 	})
+	
+	
+	-- Headlight
+	local pcl = Instance.new("SpotLight")
+	pcl.Brightness = 1
+	pcl.Face = Enum.NormalId.Front
+	pcl.Range = 90
+	pcl.Parent = game.Players.LocalPlayer.Character.Head
+	pcl.Enabled = false
+	
+	local Toggle = MainTab:CreateToggle({
+		Name = "Instant Interact",
+		CurrentValue = false,
+		Flag = "InstantToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			local holdconnect
+			holdconnect = game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
+				if Value == true then
+					fireproximityprompt(prompt)
+				elseif Value == false then 
+					holdconnect:Disconnect()
+				end
+				
+			end)
+
+	end
+		
+	})
+	
+	local Toggle = CharTab:CreateToggle({
+		Name = "Headlight",
+		CurrentValue = false,
+		Flag = "Headlight", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			pcl.Enabled = Value
+		end,
+	})
+	
+	
+	
+	
 
 	-- Notification
 
@@ -265,7 +374,7 @@ if game.PlaceId == 6839171747 then
 		Increment = 10,
 		Suffix = "FOV",
 		CurrentValue = 10,
-		Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Flag = "Fov", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Value)
 
 			game:GetService("Workspace").CurrentCamera.FieldOfView = Value
@@ -287,14 +396,23 @@ if game.PlaceId == 6839171747 then
 
 
 elseif game.PlaceId == 6516141723 then
+	for _, instance in next, game.CoreGui:GetChildren() do
+		if instance.Name == "Rayfield" or instance.Name == "OldRayfield" then
+			instance:Remove()
+		end
+	end
+
 	local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+	
 	local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 	local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+	
+	
 	Rayfield:Notify({
 		Title = "Gambol's Doors Scripts 🚪",
 		Content = "Choose the elevator",
 		Duration = 6.5,
-		Image = 4483362458,
+		Image = 11295275950,
 		Actions = {
 			
 			A = {
@@ -373,14 +491,14 @@ elseif game.PlaceId == 6516141723 then
 								Title = "Gambol's Doors Scripts 🚪",
 								Content = "Solo's games are full, retrying...",
 								Duration = 6.5,
-								Image = 4483362458,
+								Image = 11295275950,
 							})						end
 					until teleported == true
 					Rayfield:Notify({
 						Title = "Gambol's Doors Scripts 🚪",
 						Content = "Joining...",
 						Duration = 2,
-						Image = 4483362458,
+						Image = 11295275950,
 					})
 				end
 			},
@@ -454,14 +572,14 @@ elseif game.PlaceId == 6516141723 then
 								end
 							end
 							--end)
-						end
+						end 
 						task.wait(1)
 						if teleported == false then
 							Rayfield:Notify({
 								Title = "Gambol's Doors Scripts 🚪",
 								Content = "Double's games are full, retrying...",
 								Duration = 6.5,
-								Image = 4483362458,
+								Image = 11295275950,
 								Actions = { -- Notification Buttons
 								},
 							})						end
@@ -470,7 +588,7 @@ elseif game.PlaceId == 6516141723 then
 						Title = "Gambol's Doors Scripts 🚪",
 						Content = "Joining...",
 						Duration = 2,
-						Image = 4483362458,
+						Image = 11295275950,
 
 					})
 				end
@@ -553,7 +671,7 @@ elseif game.PlaceId == 6516141723 then
 								Title = "Gambol's Doors Scripts 🚪",
 								Content = "Triple's games are full, retrying...",
 								Duration = 6.5,
-								Image = 4483362458,
+								Image = 11295275950,
 								Actions = { -- Notification Buttons
 									Ignore = {
 									},
@@ -564,7 +682,7 @@ elseif game.PlaceId == 6516141723 then
 						Title = "Gambol's Doors Scripts 🚪",
 						Content = "Joining...",
 						Duration = 2,
-						Image = 4483362458,
+						Image = 11295275950,
 					})				end
 			},
 			
@@ -646,14 +764,14 @@ elseif game.PlaceId == 6516141723 then
 								Title = "Gambol's Doors Scripts 🚪",
 								Content = "Squad's games are full, retrying...",
 								Duration = 3,
-								Image = 4483362458,
+								Image = 11295275950,
 							})						end
 					until teleported == true
 					Rayfield:Notify({
 						Title = "Gambol's Doors Scripts 🚪",
 						Content = "Joining...",
 						Duration = 2,
-						Image = 4483362458,
+						Image = 11295275950,
 					})				end
 			},
 
