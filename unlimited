@@ -249,6 +249,31 @@ if game.PlaceId == 6839171747 then
 			Light.LightingChanged:Connect(dofullbright)	end,
 	})
 	
+	local Button = MainTab:CreateButton({
+		Name = "Inf Lockpick",
+		Callback = function()
+			-- Check if the lockpicking object is properly defined.
+			local player = game:GetService("Players").LocalPlayer
+			if not player then
+				warn("Code error: LocalPlayer not found. Code will not run.")
+				return
+			end
+
+			local lockpickingObject = player.Character and player.Character:FindFirstChild("Lockpick")
+			if not lockpickingObject or typeof(lockpickingObject) ~= "Instance" then
+				warn("Code error: Lockpicking object not found or wrong data type. Code will not run.")
+				return
+			end
+
+			-- Destroy unnecessary properties of the lockpicking object.
+			local properties = {"UnlockEvent"}
+			for _, property in ipairs(properties) do
+				local propertyValue = lockpickingObject[property]
+				if propertyValue and propertyValue.Destroy then
+					propertyValue:Destroy()
+				end
+			end	end,
+	})
 
 
 
