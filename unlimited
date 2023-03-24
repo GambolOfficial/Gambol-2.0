@@ -1277,11 +1277,73 @@ if game.PlaceId == 6839171747 then
 		end,
 	})
 	
+	local Section = MainTab:CreateSection("Door 50")
+	
+	local Toggle = MainTab:CreateToggle({
+		Name = "Auto library code",
+		CurrentValue = false,
+		Flag = "codeee", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val)
+			flags.getcode = val
+
+			if val then
+				local function deciphercode()
+					local paper = char:FindFirstChild("LibraryHintPaper")
+					local hints = plr.PlayerGui:WaitForChild("PermUI"):WaitForChild("Hints")
+
+					local code = {[1]="_",[2]="_",[3]="_",[4]="_",[5]="_"}
+
+					if paper then
+						for i,v in pairs(paper:WaitForChild("UI"):GetChildren()) do
+							if v:IsA("ImageLabel") and v.Name ~= "Image" then
+								for i,img in pairs(hints:GetChildren()) do
+									if img:IsA("ImageLabel") and img.Visible and v.ImageRectOffset == img.ImageRectOffset then
+										local num = img:FindFirstChild("TextLabel").Text
+
+										code[tonumber(v.Name)] = num 
+									end
+								end
+							end
+						end 
+					end
+
+					return code
+				end
+
+				local addconnect
+				addconnect = char.ChildAdded:Connect(function(v)
+					if v:IsA("Tool") and v.Name == "LibraryHintPaper" then
+						task.wait()
+
+						local code = table.concat(deciphercode())
+
+						if code:find("_") then
+							Rayfield:Notify({
+								Title = "Gambol's Doors scripts 🚪",
+								Content = "Get all the hints first! ",
+								Duration = 6.5,
+
+							})					else
+							Rayfield:Notify({
+								Title = "Gambol's Doors scripts 🚪",
+								Content = "The code is ".. code,
+								Duration = 60,
+							})						end
+					end
+				end)
+
+				repeat task.wait() until not flags.getcode
+				addconnect:Disconnect()
+			end
+		end,
+	})
+	
 
 	-- Notification
 
 
 	-- Sliders
+
 
 	local Slider = MainTab:CreateSlider({
 		Name = "FOV (Not Working)",
