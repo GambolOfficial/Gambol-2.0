@@ -3,7 +3,9 @@ if game.PlaceId == 6839171747 then
 
 	
 	local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
-
+	local plr = game.Players.LocalPlayer
+	local char = plr.Character or plr.CharacterAdded:Wait()
+	local hum = char:FindFirstChildOfClass("Humanoid") or char:WaitForChild("Humanoid")
 
 	local Window = Rayfield:CreateWindow({
 		Name = "Gambol's Doors Scripts 🚪",
@@ -35,6 +37,7 @@ if game.PlaceId == 6839171747 then
 	-- Tabs
 
 	local MainTab = Window:CreateTab("Main", 4483362458) -- Title, Image
+	local VisualsTab = Window:CreateTab("Visuals", 4483362458) -- Title, Image	
 
 	local ToolsTab = Window:CreateTab("Tools", 4483362458) -- Title, Image
 
@@ -50,9 +53,170 @@ if game.PlaceId == 6839171747 then
 	
 	
 	-- TextBox
-	
+	--flags
+	local buttons = {
+		-- general
+		light = nil,
+		fullbright = nil,
+		instapp = nil,
+		noseek = nil,
+		nogates = nil,
+		nopuzzle = nil,
+		noa90 = nil,
+		noskeledoors = nil,
+		noscreech = nil,
+		notimothy = nil,
+		getcode = nil,
+		roomsnolock = nil,
+		heartbeatwin = nil,
+		noseekarmsfire = nil,
+		avoidrushambush = nil,
+		autoplayagain = nil,
+		anticheatbypass = nil,
+		noclip = nil, --fly = false
+		autoskiprooms = nil,
+		camfov = nil,
+		speed = nil,
+		walkspeedtoggle = nil,
+		camfovtoggle = nil,
+		autopulllever = nil,
+		customnotifid = nil,
+		oldcustomnotifid = nil,
+		noeyesdamage = nil,
 
+		-- esp
+		espdoors = nil,
+		espkeys = nil,
+		espitems = nil,
+		espbooks = nil,
+		esprush = nil,
+		espchest = nil,
+		esplocker = nil,
+		esphumans = nil,
+		espgold = nil,
+		goldespvalue = nil,
+		--fakeespdoors = nil,
+		tracers = nil,
+
+		-- notifiers
+		hintrush = nil,
+		predictentities = nil,
+
+		-- auras
+		draweraura = nil,
+		keyaura = nil,
+		breakercollecter = nil,
+		bookcollecter = nil,
+
+		-- auto a-1000
+		autorooms = nil,
+		autorooms_debug = nil,
+		autorooms_blockcontrols = nil,
+
+		-- trolling
+		dropdowntrolling = nil
+	}
 	
+	
+	local flags = {
+		speed = 0,
+		espdoors = false,
+		espkeys = false,
+		espitems = false,
+		espbooks = false,
+		esprush = false,
+		espchest = false,
+		esplocker = false,
+		esphumans = false,
+		espgold = false,
+		goldespvalue = 0,
+		hintrush = false,
+		light = false,
+		instapp = false,
+		noseek = false,
+		nogates = false,
+		nopuzzle = false,
+		noa90 = false,
+		noskeledoors = false,
+		noscreech = false,
+		getcode = false,
+		roomsnolock = false,
+		draweraura = false,
+		autorooms = false,
+	}
+
+
+	local entitynames = {"RushMoving","AmbushMoving","Snare","A60","A120"}
+	local Toggle = VisualsTab:CreateToggle({
+		Name = "entity esp (WIP)",
+		CurrentValue = false,
+		Flag = "entitty", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val)
+			flags.esprush = val
+
+			if val then
+				local addconnect
+				addconnect = workspace.ChildAdded:Connect(function(v)
+					if table.find(entitynames,v.Name) then
+						task.wait(0.1)
+
+						local h = esp(v,Color3.fromRGB(255,25,25),v.PrimaryPart,v.Name:gsub("Moving",""))
+						table.insert(esptable.entity,h)
+					end
+				end)
+
+				local function setup(room)
+					if room.Name == "50" or room.Name == "100" then
+						local figuresetup = room:WaitForChild("FigureSetup")
+
+						if figuresetup then
+							local fig = figuresetup:WaitForChild("FigureRagdoll")
+							task.wait(0.1)
+
+							local h = esp(fig,Color3.fromRGB(255,25,25),fig.PrimaryPart,"Figure")
+							table.insert(esptable.entity,h)
+						end 
+					else
+						local assets = room:WaitForChild("Assets")
+
+						local function check(v)
+							if v:IsA("Model") and table.find(entitynames,v.Name) then
+								task.wait(0.1)
+
+								local h = esp(v:WaitForChild("Base"),Color3.fromRGB(255,25,25),v.Base,"Snare")
+								table.insert(esptable.entity,h)
+							end
+						end
+
+						assets.DescendantAdded:Connect(function(v)
+							check(v) 
+						end)
+
+						for i,v in pairs(assets:GetDescendants()) do
+							check(v)
+						end
+					end 
+				end
+
+				local roomconnect
+				roomconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+					setup(room)
+				end)
+
+				for i,v in pairs(workspace.CurrentRooms:GetChildren()) do
+					setup(room) 
+				end
+
+				repeat task.wait() until not flags.esprush
+				addconnect:Disconnect()
+				roomconnect:Disconnect()
+
+				for i,v in pairs(esptable.entity) do
+					v.delete()
+				end 
+			end
+		end
+	})
 	
 	-- Color Picker
 	
@@ -233,20 +397,40 @@ if game.PlaceId == 6839171747 then
 	})
 	
 
-	local Button = MainTab:CreateButton({
+	local Toggle = MainTab:CreateToggle({
 		Name = "Fullbright",
-		Callback = function()
-			local Light = game:GetService("Lighting")
+		CurrentValue = false,
+		Flag = "Fbb", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val, oldval)
+			flags.fullbright = val
 
-			function dofullbright()
-				Light.Ambient = Color3.new(1, 1, 1)
-				Light.ColorShift_Bottom = Color3.new(1, 1, 1)
-				Light.ColorShift_Top = Color3.new(1, 1, 1)
+			if val then
+				local oldAmbient = game:GetService("Lighting").Ambient
+				local oldColorShift_Bottom = game:GetService("Lighting").ColorShift_Bottom
+				local oldColorShift_Top = game:GetService("Lighting").ColorShift_Top
+
+				local function doFullbright()
+					if flags.fullbright == true then
+						game:GetService("Lighting").Ambient = Color3.new(1, 1, 1)
+						game:GetService("Lighting").ColorShift_Bottom = Color3.new(1, 1, 1)
+						game:GetService("Lighting").ColorShift_Top = Color3.new(1, 1, 1)
+					else
+						game:GetService("Lighting").Ambient = oldAmbient
+						game:GetService("Lighting").ColorShift_Bottom = oldColorShift_Bottom
+						game:GetService("Lighting").ColorShift_Top = oldColorShift_Top
+					end
+				end
+				doFullbright()
+
+				local coneee = game:GetService("Lighting").LightingChanged:Connect(doFullbright)
+				repeat task.wait() until not flags.fullbright
+
+				coneee:Disconnect()
+				game:GetService("Lighting").Ambient = oldAmbient
+				game:GetService("Lighting").ColorShift_Bottom = oldColorShift_Bottom
+				game:GetService("Lighting").ColorShift_Top = oldColorShift_Top
 			end
-
-			dofullbright()
-
-			Light.LightingChanged:Connect(dofullbright)	end,
+		end,
 	})
 	
 	local Button = MainTab:CreateButton({
@@ -393,18 +577,125 @@ if game.PlaceId == 6839171747 then
 		CurrentValue = false,
 		Flag = "InstantToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Value)
+			flags.instapp = Value
+
 			local holdconnect
-			holdconnect = game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(prompt)
-				if Value == true then
-					fireproximityprompt(prompt)
-				elseif Value == false then 
-					holdconnect:Disconnect()
-				end
-				
+			holdconnect = game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(p)
+				fireproximityprompt(p)
 			end)
 
-	end
+			repeat task.wait() until not flags.instapp
+			holdconnect:Disconnect()
+		end
+
+	
 		
+	})
+	
+	local Toggle = MainTab:CreateToggle({
+		Name = "Auto Loot",
+		CurrentValue = false,
+		Flag = "lootuara", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val)
+			flags.draweraura = val
+
+			if val then
+				local function setup(room)
+					local function check(v)
+						if v:IsA("Model") then
+							if v.Name == "DrawerContainer" then
+								local knob = v:WaitForChild("Knobs")
+
+								if knob then
+									local prompt = knob:WaitForChild("ActivateEventPrompt")
+									local interactions = prompt:GetAttribute("Interactions")
+
+									if not interactions then
+										task.spawn(function()
+											repeat task.wait(0.1)
+												if plr:DistanceFromCharacter(knob.Position) <= 12 then
+													fireproximityprompt(prompt)
+												end
+											until prompt:GetAttribute("Interactions") or not flags.draweraura
+										end)
+									end
+								end
+							elseif v.Name == "GoldPile" then
+								local prompt = v:WaitForChild("LootPrompt")
+								local interactions = prompt:GetAttribute("Interactions")
+
+								if not interactions then
+									task.spawn(function()
+										repeat task.wait(0.1)
+											if plr:DistanceFromCharacter(v.PrimaryPart.Position) <= 12 then
+												fireproximityprompt(prompt) 
+											end
+										until prompt:GetAttribute("Interactions") or not flags.draweraura
+									end)
+								end
+							elseif v.Name:sub(1,8) == "ChestBox" then
+								local prompt = v:WaitForChild("ActivateEventPrompt")
+								local interactions = prompt:GetAttribute("Interactions")
+
+								if not interactions then
+									task.spawn(function()
+										repeat task.wait(0.1)
+											if plr:DistanceFromCharacter(v.PrimaryPart.Position) <= 12 then
+												fireproximityprompt(prompt)
+											end
+										until prompt:GetAttribute("Interactions") or not flags.draweraura
+									end)
+								end
+							elseif v.Name == "RolltopContainer" then
+								local prompt = v:WaitForChild("ActivateEventPrompt")
+								local interactions = prompt:GetAttribute("Interactions")
+
+								if not interactions then
+									task.spawn(function()
+										repeat task.wait(0.1)
+											if plr:DistanceFromCharacter(v.PrimaryPart.Position) <= 12 then
+												fireproximityprompt(prompt)
+											end
+										until prompt:GetAttribute("Interactions") or not flags.draweraura
+									end)
+								end
+							end 
+						end
+					end
+
+					local subaddcon
+					subaddcon = room.DescendantAdded:Connect(function(v)
+						check(v) 
+					end)
+
+					for i,v in pairs(room:GetDescendants()) do
+						check(v)
+					end
+
+					task.spawn(function()
+						repeat task.wait() until not flags.draweraura
+						subaddcon:Disconnect() 
+					end)
+				end
+
+				local addconnect
+				addconnect = workspace.CurrentRooms.ChildAdded:Connect(function(room)
+					setup(room)
+				end)
+
+				for i,room in pairs(workspace.CurrentRooms:GetChildren()) do
+					if room:FindFirstChild("Assets") then
+						setup(room) 
+					end
+				end
+
+				repeat task.wait() until not flags.draweraura
+				addconnect:Disconnect()
+			end
+		end
+
+
+
 	})
 	
 	local Toggle = CharTab:CreateToggle({
@@ -437,9 +728,7 @@ if game.PlaceId == 6839171747 then
 			game:GetService("Workspace").CurrentCamera.FieldOfView = Value
 		end,
 	})
-
-
-
+	
 
 
 	--Sections
