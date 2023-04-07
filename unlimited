@@ -333,6 +333,7 @@ if game.PlaceId == 6839171747 then
 		keyaura = false,
 		breakercollecter = false,
 		bookcollecter = false,
+		nogold = false,
 
 		-- auto a-1000
 		autorooms = false,
@@ -1876,9 +1877,20 @@ if game.PlaceId == 6839171747 then
 		end
 	end)
 	buttons.noseekarmsfire = noseekarmsfirebtn
+	
 
 	local Label = MainTab:CreateLabel("Press this only if you have the\nbreaker box minigame on.")
+
 	local Section = MainTab:CreateSection("Interactables")
+	local nogoldbtn = MainTab:CreateToggle({
+		Name = "Ignore Gold In Loot Aura",
+		CurrentValue = false,
+		Flag = "nogold", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val, oldval)
+			flags.nogold = val
+		end,
+	})
+	flags.nogold = nogoldbtn
 	if fireproximityprompt then
 		local draweraurabtn = MainTab:CreateToggle({
 			Name = "Loot Aura",
@@ -1927,7 +1939,8 @@ if game.PlaceId == 6839171747 then
 												until prompt:GetAttribute("Interactions") or not flags.draweraura
 											end)
 										end
-									else
+									else end
+										if flags.nogold == true then 
 										local knob = v:WaitForChild("Knobs")
 
 										if knob then
@@ -1963,7 +1976,7 @@ if game.PlaceId == 6839171747 then
 												end)
 											end
 										end
-									end
+									else end 
 								elseif v.Name == "KeyObtain" or v.Name == "ElectricalKeyObtain" then
 									local prompt = v:WaitForChild("ModulePrompt")
 									local interactions = prompt:GetAttribute("Interactions")
@@ -2108,7 +2121,7 @@ if game.PlaceId == 6839171747 then
 											--end)
 										until not v:IsDescendantOf(workspace) or not prompt:IsDescendantOf(workspace) or not flags.draweraura
 									end)
-								elseif v.Name == "GoldPile" then
+								elseif v.Name == "GoldPile" and flags.nogold == false then
 									local prompt = v:WaitForChild("LootPrompt")
 									local interactions = prompt:GetAttribute("Interactions")
 
@@ -2139,7 +2152,7 @@ if game.PlaceId == 6839171747 then
 												--end)
 											until prompt:GetAttribute("Interactions") or not flags.draweraura
 										end)
-									end
+									else if false then end end
 								elseif v.Name:sub(1,8) == "ChestBox" then
 									local prompt = v:WaitForChild("ActivateEventPrompt")
 									local interactions = prompt:GetAttribute("Interactions")
