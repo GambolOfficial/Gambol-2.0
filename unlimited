@@ -204,8 +204,37 @@ if game.PlaceId == 6839171747 then
 		end
 	end
 
-	local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+	local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/UI-Interface/CustomFIeld/main/RayField.lua'))()
+	local CoreGui = game:GetService("CoreGui")
+	local UserInputService = game:GetService("UserInputService")
+	local RunService = game:GetService("RunService")
 
+	local ScreenGui = CoreGui:FindFirstChild("MouseUnlockerGui") or Instance.new("ScreenGui")
+	ScreenGui.Name = "MouseUnlockerGui"
+	ScreenGui.Enabled = true
+	ScreenGui.Parent = CoreGui
+
+	local TextButton = Instance.new("TextButton")
+	TextButton.Name = "ModalButton"
+	TextButton.Modal = true
+	TextButton.Size = UDim2.new(0, 0, 0, 0)
+	TextButton.Position = UDim2.new(0, 0, 0, 0)
+	TextButton.Visible = true
+	TextButton.Parent = ScreenGui
+
+	UserInputService.InputBegan:Connect(function(inputObject, gameProcessedEvent)
+		if inputObject.KeyCode == Enum.KeyCode.RightShift then
+			TextButton.Visible = not TextButton.Visible
+		end
+	end)
+
+	RunService.Stepped:Connect(function()
+		if TextButton.Visible == true then
+			UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.ForceShow
+		else
+			UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
+		end
+	end)
 	local currentver = "3.8"
 	local gui_data = nil
 	local s,e = pcall(function()
@@ -339,7 +368,9 @@ if game.PlaceId == 6839171747 then
 		autorooms = false,
 		autorooms_debug = false,
 		autorooms_blockcontrols = false,
-
+		
+		-- esp colors
+		dooresp = nil,
 		-- trolling
 		dropdowntrolling = "None"
 	}
@@ -401,7 +432,7 @@ if game.PlaceId == 6839171747 then
 		autorooms = nil,
 		autorooms_debug = nil,
 		autorooms_blockcontrols = nil,
-		
+
 		-- Fools
 		fools = nil,
 
@@ -661,13 +692,98 @@ if game.PlaceId == 6839171747 then
 	end
 
 	-- Sections
-	local Section = MainTab:CreateSection("Player")	
+	local Playersection = MainTab:CreateSection("Player")	
+	
+	-- Config Tab
 
+
+	local background = ConfigTab:CreateColorPicker({
+		Name = "Background Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "background", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["Background"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+
+	local topbar = ConfigTab:CreateColorPicker({
+		Name = "Topbar Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "topbar", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["Topbar"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+
+	local Shadow = ConfigTab:CreateColorPicker({
+		Name = "Shadow Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "shadow", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["Shadow"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+
+	local selectedtab = ConfigTab:CreateColorPicker({
+		Name = "Selected Tab Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "selectedtab", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["TabBackgroundSelected"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+	
+	local notifyground = ConfigTab:CreateColorPicker({
+		Name = "Notification Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "notifyground", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["NotificationBackground"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+	
+	local tabtext = ConfigTab:CreateColorPicker({
+		Name = "Tab Text Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "tabtext", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["TabTextColor"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+	
+	local tabtext = ConfigTab:CreateColorPicker({
+		Name = "Text Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "textcolor", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["TextColor"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+	
+	local tabstroke = ConfigTab:CreateColorPicker({
+		Name = "tabstroke Color",
+		Color = Color3.fromRGB(255,255,255),
+		Flag = "tabstroke", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			Rayfield.Theme.Default["TabBackground"] = Value -- Change "Background" to thing u wanna change
+			ChangeTheme("Default")
+		end
+	})
+	
+	
 	-- Toggles	
 
 	-- Client Glow
 	local clientglowbtn = MainTab:CreateToggle({
 		Name = "Client Glow",
+		SectionParent = Playersection,
 		CurrentValue = false,
 		Flag = "light", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -690,6 +806,7 @@ if game.PlaceId == 6839171747 then
 
 	local cfullbrightbtn = MainTab:CreateToggle({
 		Name = "Fullbright",
+		SectionParent = Playersection,
 		CurrentValue = false,
 		Flag = "fbe", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -729,6 +846,7 @@ if game.PlaceId == 6839171747 then
 	if fireproximityprompt then
 		local instausebrn = MainTab:CreateToggle({
 			Name = "Instant Use",
+			SectionParent = Playersection,
 			CurrentValue = false,
 			Flag = "Iou", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -758,6 +876,7 @@ if game.PlaceId == 6839171747 then
 	-- Fullbright 
 	local walkspeedslider = MainTab:CreateSlider({
 		Name = "WalkSpeed",
+		SectionParent = Playersection,
 		Range = {16, 22},
 		Increment = 1,
 		Suffix = "WalkSpeed",
@@ -773,6 +892,7 @@ if game.PlaceId == 6839171747 then
 	-- Toggle Walkspeed
 	local walkspeedtglbtn = MainTab:CreateToggle({
 		Name = "Toggle Walkspeed",
+		SectionParent = Playersection,
 		CurrentValue = false,
 		Flag = "wspe", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -786,32 +906,33 @@ if game.PlaceId == 6839171747 then
 
 	MainTab:CreateButton({
 		Name = "Reset Character",
+		SectionParent = Playersection,
 		Callback = function()
-			Rayfield:Notify({
-				Title = "Reset Character?",
-				Content = "Are you sure you want to reset your character?",
-				Duration = 6.5,
-				Image = 4483362458,
-				Actions = { -- Notification Buttons
-					mhm = {
-						Name = "Yes",
+			Window:Prompt({
+				Title = 'Maxed',
+				SubTitle = 'Reset Character?',
+				Content = 'Are you sure you want to reset your character?',
+				Actions = {
+					Yes = {
+						Name = 'Yes',
 						Callback = function()
-							game.Players.LocalPlayer.Character.Humanoid.Health = 0
-						end
+							-- You know what a callback is...
+						end,
 					},
-					nah = {
-						Name = "No",
+					nvm = {
+						Name = 'Nvm',
 						Callback = function()
-							print("Canceled Reset character ")
-						end
-					},
-				},
+							print("Canceled reset character")
+						end,
+					}
+				}
 			})
 		end,
 	})
 
 	local camfovslider = MainTab:CreateSlider({
 		Name = "FOV",
+		SectionParent = Playersection,
 		Range = {50, 120},
 		Increment = 1,
 		Suffix = "FOV",
@@ -824,6 +945,7 @@ if game.PlaceId == 6839171747 then
 	buttons.camfov = camfovslider
 	local togglefovbrn = MainTab:CreateToggle({
 		Name = "Toggle FOV",
+		SectionParent = Playersection,
 		CurrentValue = false,
 		Flag = "Fov12e3", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val ,oldval)
@@ -861,10 +983,11 @@ if game.PlaceId == 6839171747 then
 		end)
 	end)
 
-	local Section = MainTab:CreateSection("Esp")	
+	local espsection = MainTab:CreateSection("Esp")	
 
 	MainTab:CreateButton({
 		Name = "Clear ESP",
+		SectionParent = espsection,
 		Callback = function()
 			pcall(function()
 				for _,e in pairs(esptable) do
@@ -881,10 +1004,11 @@ if game.PlaceId == 6839171747 then
 
 	if Drawing then
 		if not syn or not PROTOSMASHER_LOADED then
-			local Label = MainTab:CreateLabel("Tracers only work with 70 FOV.")
+			local Label = MainTab:CreateLabel("Tracers only work with 70 FOV.", espsection)
 		end
 		local traceresp = MainTab:CreateToggle({
 			Name = "Tracers",
+			SectionParent = espsection,
 			CurrentValue = false,
 			Flag = "Tracers", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -894,15 +1018,22 @@ if game.PlaceId == 6839171747 then
 
 		buttons.tracers = traceresp
 	end
-
+	local doorespcolor = ConfigTab:CreateColorPicker({
+		Name = "Doors ESP Color",
+		Color = Color3.fromRGB(2,255,255),
+		Flag = "dooresp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(Value)
+			flags.dooresp = Value
+			
+		end
+	})
+	local latestroom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
 	local espdoorsbtn = MainTab:CreateToggle({
 		Name = "Doors ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "espdoor", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
-			
-			
-			
 			flags.espdoors = val
 
 			if val then
@@ -915,7 +1046,9 @@ if game.PlaceId == 6839171747 then
 					end
 
 					task.wait(0.1)
-					local h = esp(door,Color3.fromRGB(255,240,0),door,"Door")
+					local h = esp(door,Color3.fromRGB(2,255,255),door,"Door")
+
+					
 					table.insert(esptable.doors,h)
 					table.insert(esptableinstances, door)
 
@@ -957,6 +1090,7 @@ if game.PlaceId == 6839171747 then
 
 	local espkeysbtn = MainTab:CreateToggle({
 		Name = "Key/Lever ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "espkey", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1048,6 +1182,7 @@ if game.PlaceId == 6839171747 then
 
 	local espitemsbtn = MainTab:CreateToggle({
 		Name = "Item ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "espitem", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1119,6 +1254,7 @@ if game.PlaceId == 6839171747 then
 
 	local espbooksbtn = MainTab:CreateToggle({
 		Name = "Book/Breaker ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "espbook", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1191,12 +1327,15 @@ if game.PlaceId == 6839171747 then
 
 	local esprusbtn = MainTab:CreateToggle({
 		Name = "Entity ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "esprush1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
 			flags.esprush = val
+			local Highlight = Instance.new('Highlight')
 
 			if val then
+				Highlight.Enabled = true
 				local addconnect
 				addconnect = workspace.ChildAdded:Connect(function(v)
 					if table.find(entitynames,v.Name) then
@@ -1222,9 +1361,12 @@ if game.PlaceId == 6839171747 then
 						if figuresetup then
 							local fig = figuresetup:WaitForChild("FigureRagdoll")
 							task.wait(0.1)
-
-							local h = esp(fig,Color3.fromRGB(255,25,25),fig.PrimaryPart,"Figure")
-							table.insert(esptable.entity,h)
+						    Highlight.Adornee = fig
+							Highlight.DepthMode = 0
+							Highlight.Name = 'Highlight'
+							Highlight.Parent = fig
+							Highlight.FillTransparency = 0.3
+							
 						end 
 					else
 						local assets = room:WaitForChild("Assets")
@@ -1262,7 +1404,7 @@ if game.PlaceId == 6839171747 then
 				repeat task.wait() until MAXEDLOADED == false or not flags.esprush
 				addconnect:Disconnect()
 				roomconnect:Disconnect()
-
+				Highlight.Enabled = false
 				for i,v in pairs(esptable.entity) do
 					v.delete()
 				end 
@@ -1273,6 +1415,7 @@ if game.PlaceId == 6839171747 then
 
 	local esplockerbrn = MainTab:CreateToggle({
 		Name = "Wardrobe/Locker ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "esplocker", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1366,6 +1509,7 @@ if game.PlaceId == 6839171747 then
 
 	local espchesbtn = MainTab:CreateToggle({
 		Name = "Chest ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "Chestesp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1451,6 +1595,7 @@ if game.PlaceId == 6839171747 then
 
 	local esphumansbtn = MainTab:CreateToggle({
 		Name = "Player ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "playeresp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1511,6 +1656,7 @@ if game.PlaceId == 6839171747 then
 
 	local espgoldbtn = MainTab:CreateToggle({
 		Name = "Gold ESP",
+		SectionParent = espsection,
 		CurrentValue = false,
 		Flag = "goldesp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1585,6 +1731,7 @@ if game.PlaceId == 6839171747 then
 
 	local goldespvaluebtn = MainTab:CreateSlider({
 		Name = "Minimum Gold for Gold ESP",
+		SectionParent = espsection,
 		Range = {5, 150},
 		Increment = 1,
 		Suffix = "Gold",
@@ -1596,10 +1743,11 @@ if game.PlaceId == 6839171747 then
 	})
 	buttons.goldespvalue = goldespvaluebtn
 
-	local Section = MainTab:CreateSection("Entities")
+	local entitysection = MainTab:CreateSection("Entities")
 
 	local hintrushbtn = MainTab:CreateToggle({
 		Name = "Notify Entities",
+		SectionParent = entitysection,
 		CurrentValue = false,
 		Flag = "entities", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1611,6 +1759,7 @@ if game.PlaceId == 6839171747 then
 
 	local predictentitiesbtn = MainTab:CreateToggle({
 		Name = "Event Prediction",
+		SectionParent = entitysection,
 		CurrentValue = false,
 		Flag = "predictentities", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1629,6 +1778,7 @@ if game.PlaceId == 6839171747 then
 
 	local noeyesdamagebtn = MainTab:CreateToggle({
 		Name = "No Eyes Damage",
+		SectionParent = entitysection,
 		CurrentValue = false,
 		Flag = "Noeyes", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1640,6 +1790,7 @@ if game.PlaceId == 6839171747 then
 
 	local noseekbtn = MainTab:CreateToggle({
 		Name = "Disable Seek chase",
+		SectionParent = entitysection,
 		CurrentValue = false,
 		Flag = "noseek", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1666,6 +1817,7 @@ if game.PlaceId == 6839171747 then
 
 	local noscreechbtn = MainTab:CreateToggle({
 		Name = "Harmless Screech",
+		SectionParent = entitysection,
 		CurrentValue = false,
 		Flag = "noscreech", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1683,6 +1835,7 @@ if game.PlaceId == 6839171747 then
 
 	local Toggle = MainTab:CreateToggle({
 		Name = "No Timothy (Spider) Jumpscare",
+		SectionParent = entitysection,
 		CurrentValue = false,
 		Flag = "Nospider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1699,10 +1852,11 @@ if game.PlaceId == 6839171747 then
 	buttons.notimothy = notimothybtn
 
 	if hookmetamethod and newcclosure and getnamecallmethod then
-		local Label = MainTab:CreateLabel("Do not click when playing the heartbeat minigame if you have'always win heartbeat' on!")
+		local Label = MainTab:CreateLabel("Do not click when playing the heartbeat minigame if you have'always win heartbeat' on!", entitysection)
 
 		local heartbeatwinbtn = MainTab:CreateToggle({
 			Name = "Always win Heartbeat minigame",
+			SectionParent = entitysection,
 			CurrentValue = false,
 			Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -1864,9 +2018,10 @@ if game.PlaceId == 6839171747 then
 		end
 	end--]]
 	end)
-	local Section = MainTab:CreateSection("Rooms (DOORS)")
+	local doorsection = MainTab:CreateSection("Rooms (DOORS)")
 	local noseekarmsfirebtn = MainTab:CreateToggle({
 		Name = "No Seek Arms & Fire",
+		SectionParent = doorsection,
 		CurrentValue = false,
 		Flag = "nofire", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1886,16 +2041,16 @@ if game.PlaceId == 6839171747 then
 	local floor = game:GetService("ReplicatedStorage").GameData.Floor.Value
 
 
-	local Label = MainTab:CreateLabel("Press this only if you have the\nbreaker box minigame on.")
 	local floor = game:GetService("ReplicatedStorage").GameData.Floor.Value
 	if floor == "Fools" then
 		buttons.fools = true
 	else buttons.fools = false
 	end
-	local Section = MainTab:CreateSection("Interactables")
+	local interactsection = MainTab:CreateSection("Interactables")
 	local nogoldbtn = MainTab:CreateToggle({
-		
+
 		Name = "Ignore Gold In Loot Aura",
+		SectionParent = interactsection,
 		CurrentValue = buttons.fools,
 		Flag = "nogold", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
@@ -1908,6 +2063,7 @@ if game.PlaceId == 6839171747 then
 	if fireproximityprompt then
 		local draweraurabtn = MainTab:CreateToggle({
 			Name = "Loot Aura",
+			SectionParent = interactsection,
 			CurrentValue = false,
 			Flag = "Lootura", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -1954,7 +2110,6 @@ if game.PlaceId == 6839171747 then
 											end)
 										end
 									else end
-										if flags.nogold == true then 
 										local knob = v:WaitForChild("Knobs")
 
 										if knob then
@@ -1989,7 +2144,6 @@ if game.PlaceId == 6839171747 then
 													until prompt:GetAttribute("Interactions") or not flags.draweraura
 												end)
 											end
-										end
 									else end 
 								elseif v.Name == "KeyObtain" or v.Name == "ElectricalKeyObtain" then
 									local prompt = v:WaitForChild("ModulePrompt")
@@ -2275,10 +2429,12 @@ if game.PlaceId == 6839171747 then
 		oldwarnmessage("Maxed v"..currentver, "You need to have fireproximityprompt function for 'loot aura'.", 7)
 
 	end
+	local roomslocked2 = RoomsTab:CreateLabel("You need to be in The Rooms to access these options",roomslocked)
 
 	if fireproximityprompt then
 		local bookcollecterbtn = MainTab:CreateToggle({
 			Name = "Book Aura",
+			SectionParent = interactsection,
 			CurrentValue = false,
 			Flag = "bookaura", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -2370,6 +2526,7 @@ if game.PlaceId == 6839171747 then
 	if fireproximityprompt then
 		local breakercollecterbtn = MainTab:CreateToggle({
 			Name = "Breaker Aura",
+			SectionParent = interactsection,
 			CurrentValue = false,
 			Flag = "breakeraura", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -2461,6 +2618,7 @@ if game.PlaceId == 6839171747 then
 	if fireproximityprompt then
 		local autopullleverbtn = MainTab:CreateToggle({
 			Name = "Lever Aura",
+			SectionParent = interactsection,
 			CurrentValue = false,
 			Flag = "leveraura", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 			Callback = function(val, oldval)
@@ -2552,8 +2710,294 @@ if game.PlaceId == 6839171747 then
 
 
 	end
+	-- The Rooms
+	local roomslocked = RoomsTab:CreateSection('The Rooms',false)
+	local A90Module = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules:FindFirstChild("A90")
+	local PathRunning = nil
+	local Wardrobes = {}
+	local Wardrobe = nil
+	local CurrentWardrobe = nil
 
+	
+
+	if game.ReplicatedStorage:WaitForChild("GameData"):WaitForChild("Floor").Value == "Rooms" then
+		-- anti afk by geodude#2619
+		task.spawn(function()
+			--	pcall(function()
+			local GC = getconnections or get_signal_cons
+			if GC then
+				for i,v in pairs(GC(plr.Idled)) do
+					if v["Disable"] then
+						v["Disable"](v)
+					elseif v["Disconnect"] then
+						v["Disconnect"](v)
+					end
+				end
+			else
+				game:GetService("Players").LocalPlayer.Idled:Connect(function()
+					game:GetService("VirtualUser"):CaptureController()
+					game:GetService("VirtualUser"):ClickButton2(Vector2.new()) 
+				end)
+			end
+			--end)
+		end)
+		inRooms = true
+
+		local Pathfinding_Highlights = game.Workspace:FindFirstChild("Pathfinding_Highlights")
+		if Pathfinding_Highlights == nil then
+			Pathfinding_Highlights = Instance.new("Folder", workspace)
+			Pathfinding_Highlights.Name = "Pathfinding_Highlights"
+		end
+		Pathfinding_Highlights:ClearAllChildren()
+
+		if floor == "Hotel" then 
+			roomslocked:Lock()
+		end
+	elseif floor == "Rooms" then
+		roomslocked2:Destroy()
+		roomslocked:Unlock()
 end
+
+
+
+		
+		
+		local noa90btn = RoomsTab:CreateToggle({
+		Name = "Harmless A-90",
+		SectionParent = roomslocked,
+			CurrentValue = false,
+			Flag = "noa90", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val, oldval)
+			flags.noa90 = val
+
+			if val then
+				if not A90Module then A90Module = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules:FindFirstChild("A90") end
+				if A90Module then
+					A90Module.Parent = nil
+				end
+			else
+				if A90Module then
+					A90Module.Parent = plr.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules
+				end
+			end
+			end,
+	})
+	buttons.noa90 = noa90btn
+	
+	function clearWardrobes()
+		Wardrobes = {}
+		Wardrobe = nil
+		CurrentWardrobe = nil
+	end
+
+	function loadWardrobes()
+		clearWardrobes()
+		local function check(assets)
+			for _,v in pairs(assets:GetDescendants()) do
+				if v.Name == "Rooms_Locker" then
+					if v:FindFirstChild("Door") and v:FindFirstChild("HidePrompt") then
+						if v.HiddenPlayer.Value == nil  then
+							if v.Door.Position.Y > -3 then
+								if not table.find(Wardrobes, v) then
+									table.insert(Wardrobes, v)
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+
+		check(game:GetService("Workspace").CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value])
+		check(game:GetService("Workspace").CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value-1])
+		check(game:GetService("Workspace").CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value-2])
+		check(game:GetService("Workspace").CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value]) -- check again
+
+		for i,v in pairs(Wardrobes) do
+			if Wardrobe == nil then
+				Wardrobe = v
+			else
+				if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Door.Position).Magnitude < (Wardrobe.Door.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
+					Wardrobe = v
+				end
+			end
+		end
+	end
+	function getWardrobe()
+		loadWardrobes()
+		return Wardrobe
+	end
+
+	function getWalkPart()
+		local P = nil
+
+		local A60_A120 = workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120")
+		if A60_A120 then -- and A60_A120.Main.Position.Y > -4 then
+			P = getWardrobe()
+		else
+			P = game:GetService("Workspace").CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value].Door
+		end
+
+		return P
+	end
+
+	function unhidefunc() plr.Character:SetAttribute("Hiding",false) end
+	function isLocker(Part)
+		return Part.Name == "Rooms_Locker"
+	end 
+	local autoa1000 = nil
+	local autoa1000 = RoomsTab:CreateToggle({
+		Name = "Auto A-1000",
+		SectionParent = roomslocked,
+		Info = "Goes To A-1000 Automatically ", -- Speaks for itself, Remove if none.
+		CurrentValue = false,
+		Flag = "A1000", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+		Callback = function(val, oldval)
+			if flags.noa90 == false then noa90btn:Set(true);oldnormalmessage("AUTO A-1000", "Enabled Harmless A90", 5) end
+
+			if PathRunning == true then 
+				PathRunning = false
+				task.wait()
+			end
+
+			flags.autorooms = val
+			if val then
+				local goingToHide = false
+				local HideCheck = game:GetService("RunService").RenderStepped:Connect(function()
+					if flags.autorooms == true then
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = false
+						game.Players.LocalPlayer.Character.Collision.CanCollide = false
+						game.Players.LocalPlayer.Character.Collision.Size = Vector3.new(8, game.Players.LocalPlayer.Character.Collision.Size.Y, 8)
+						game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 21
+
+						local Part = getWalkPart()
+						local A60_A120 = workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120")
+						if A60_A120 then
+							if Part then
+								if isLocker(Part) then
+									if A60_A120.Main.Position.Y > -4 then
+										if plr:DistanceFromCharacter(Part.Door.Position) <= 9 then
+											goingToHide = true
+											if plr.Character.HumanoidRootPart.Anchored == false then
+												fireproximityprompt(Part.HidePrompt)
+											end
+											--else if plr:DistanceFromCharacter(Part.Door.Position) <= 11.5 then plr.Character:PivotTo(Part.Door.CFrame) end
+										end
+									end
+								end
+							end
+						else
+							if plr.Character.HumanoidRootPart.Anchored == true then 
+								repeat task.wait() until not (workspace:FindFirstChild("A60") or workspace:FindFirstChild("A120"))
+								unhidefunc();goingToHide = false 
+							end
+						end
+
+						if game.Players.LocalPlayer.Character.Humanoid.Health < 1 then autoa1000:Set(false) end
+					else
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+						game.Players.LocalPlayer.Character.Collision.CanCollide = true
+						game.Players.LocalPlayer.Character.Collision.Size = Vector3.new(4, game.Players.LocalPlayer.Character.Collision.Size.Y, 4)
+					end
+
+					if flags.autorooms_blockcontrols == false then
+						plr.DevComputerMovementMode = Enum.DevComputerMovementMode.KeyboardMouse
+					end
+				end)
+
+				while flags.autorooms do
+					task.wait();if flags.noa90 == false then noa90btn:Set(true);oldnormalmessage("AUTO A-1000", "Enabled Harmless A90", 5) end
+					--repeat task.wait() until goingToHide == false and plr.Character.HumanoidRootPart.Anchored == false
+
+					local Part = getWalkPart()
+					if goingToHide == false or not isLocker(Part) then
+						unhidefunc()
+					end
+
+					local Highlight = Instance.new("Highlight", Pathfinding_Highlights)
+					Highlight.FillColor = Color3.fromRGB(85, 255, 0)
+					Highlight.Adornee = Part.Door
+
+					task.spawn(function()
+						if flags.autorooms_debug == true then
+							if isLocker(Part) then
+								oldnormalmessage("AUTO A-1000 [DEBUG]", "Trying to go to "..Part.Name..".", 5)
+							else
+								oldnormalmessage("AUTO A-1000 [DEBUG]", "Trying to go to next door ("..(game:GetService("ReplicatedStorage").GameData.LatestRoom.Value + 1)..").", 5)
+							end
+						end
+					end)
+
+					local Path = PathfindingService:CreatePath({ 
+						WaypointSpacing = 1, 
+						AgentRadius = 0.8,
+						AgentCanJump = false 
+					})
+
+					local HRP = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+					local Humanoid = game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid")
+					if not HRP then HRP = game.Players.LocalPlayer.Character.PrimaryPart end
+
+					local Success, ErrorMessage = pcall(function()
+						Path:ComputeAsync(HRP.Position - Vector3.new(0, 3, 0), Part.Door.Position)
+					end)
+
+					if Success and Path.Status == Enum.PathStatus.Success then 
+						PathRunning = true
+						local waypoints = Path:GetWaypoints()
+						VisualizerFolder:ClearAllChildren()
+						PathModule.visualize(waypoints)
+
+						for i, v in pairs(waypoints) do
+							if HRP.Anchored == false then
+								if PathRunning == false then
+									pcall(function() Highlight.OutlineTransparency = 1 end);pcall(function() Highlight.FillTransparency = 1 end);pcall(function() Highlight.Adornee = nil end)
+									Pathfinding_Highlights:ClearAllChildren()
+									VisualizerFolder:ClearAllChildren()
+									break
+								else
+									Humanoid:MoveTo(v.Position)
+									Humanoid.MoveToFinished:Wait()
+								end
+							end
+						end
+
+						if isLocker(Part) then
+							repeat task.wait() until HRP.Anchored == false or plr.Character:GetAttribute("Hiding") == false or PathRunning == false
+						end
+						PathRunning = false
+					end
+
+					pcall(function() Highlight.OutlineTransparency = 1 end);pcall(function() Highlight.FillTransparency = 1 end);pcall(function() Highlight.Adornee = nil end)
+					Pathfinding_Highlights:ClearAllChildren()
+					VisualizerFolder:ClearAllChildren()
+				end
+
+				task.spawn(function()--if goingToHide == false then
+					repeat task.wait() until flags.autorooms == false and goingToHide == false
+					HideCheck:Disconnect()
+					--else
+					--HideCheck:Disconnect()
+				end)--end
+			else
+				plr.DevComputerMovementMode = Enum.DevComputerMovementMode.KeyboardMouse
+			end
+		end,
+	})
+	
+
+			
+			
+			
+			
+			
+			
+		
+
+	end
+
+
+
 local START_TIME = os.time()
 local customnotifid = "10469938989"
 
@@ -2585,6 +3029,7 @@ function message(text)
 end
 local currentver = "3.8"
 if game.PlaceId == 6839171747 then
+	
 
 
 
@@ -2757,364 +3202,370 @@ if game.PlaceId == 6839171747 then
 			return true
 		else
 			return false
+			
 		end
+		
 	end
+	
+
+end
 
 
-
-
-if  game.PlaceId == 6516141723 then 
-	local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
-
-	local Window = Rayfield:CreateWindow({
+	if  game.PlaceId == 6516141723 then 
+		local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/UI-Interface/CustomFIeld/main/RayField.lua'))()
+		local Window = Rayfield:CreateWindow({
 		Name = "MAXED",
-		LoadingTitle = "MAXED",
-		LoadingSubtitle = "by Gambol",
-		ConfigurationSaving = {
-			Enabled = true,
-		},
-		Discord = {
-			Enabled = false,
-			Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
-			RememberJoins = true -- Set this to false to make them join the discord every time they load it up
-		},
-		KeySystem = false, -- Set this to true to use our key system
-		KeySettings = {
-			Title = "MAXED",
-			Subtitle = "Key System",
-			Note = "Join the discord (discord.gg/sirius)",
-			FileName = "SiriusKey",
-			SaveKey = true,
-			GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-			Key = "Hello"
-		}
-	})
+			LoadingTitle = "MAXED",
+			LoadingSubtitle = "by Gambol",
+			ConfigurationSaving = {
+				Enabled = true,
+			},
+			Discord = {
+				Enabled = false,
+				Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
+				RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+			},
+			KeySystem = false, -- Set this to true to use our key system
+			KeySettings = {
+				Title = "MAXED",
+				Subtitle = "Key System",
+				Note = "Join the discord (discord.gg/sirius)",
+				FileName = "SiriusKey",
+				SaveKey = true,
+				GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+				Key = "Hello"
+			}
+		})
 
-	local retab = Window:CreateTab("Main", 4483362458) -- Title, Image
+	local retab = Window:CreateTab("Main", 11295291707) -- Title, Image
+	local elevatorsection = retab:CreateSection("Elevators") -- The 2nd argument is to tell if its only a Title and doesnt contain elements
+	
 
-	local Button = retab:CreateButton({
+		local Button = retab:CreateButton({
 		Name = "Join Solo",
-		Callback = function()
-			local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-			local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-			function message(text)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+		SectionParent = elevatorsection,
+			Callback = function()
+				local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+				local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+				function message(text)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				task.spawn(function()
-					local msg = Instance.new("Message",workspace)
-					msg.Text = tostring(text)
-					task.wait(5)
-					msg:Destroy()
-				end)
-			end
+					task.spawn(function()
+						local msg = Instance.new("Message",workspace)
+						msg.Text = tostring(text)
+						task.wait(5)
+						msg:Destroy()
+					end)
+				end
 
-			function normalmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function normalmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
-				)
-			end
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
+					)
+				end
 
-			function confirmnotification(title, text, timee, callback)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function confirmnotification(title, text, timee, callback)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
-				)
-			end 
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
+					)
+				end 
 
-			function warnmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
-				)
-			end
+				function warnmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
+					)
+				end
 
-			local teleported = false
-			repeat
-				for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
-					if v:FindFirstChild("DoorHitbox") then
-						if v.DoorHitbox:FindFirstChild("BillboardGui") then
-							if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
-								if not v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
-									if v.DoorHitbox.BillboardGui.Title.Text == "0 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12" then
-										repeat
-											game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
-											task.wait()
-										until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
-										teleported = true
-										break
+				local teleported = false
+				repeat
+					for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
+						if v:FindFirstChild("DoorHitbox") then
+							if v.DoorHitbox:FindFirstChild("BillboardGui") then
+								if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
+									if not v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
+										if v.DoorHitbox.BillboardGui.Title.Text == "0 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12" then
+											repeat
+												game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
+												task.wait()
+											until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
+											teleported = true
+											break
+										end
 									end
 								end
 							end
 						end
 					end
-				end
-				task.wait(1)
-				if teleported == false then
-					normalmessage("MAXED", "Solo elevators are full, retrying...", 2)
-				end
-			until teleported == true
-			normalmessage("MAXED", "Joining...", 10)		end,
-	})
-	local Button = retab:CreateButton({
+					task.wait(1)
+					if teleported == false then
+						normalmessage("MAXED", "Solo elevators are full, retrying...", 2)
+					end
+				until teleported == true
+				normalmessage("MAXED", "Joining...", 10)		end,
+		})
+		local Button = retab:CreateButton({
 		Name = "Join Duo",
-		Callback = function()
-			local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-			local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-			function message(text)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+		SectionParent = elevatorsection,
+			Callback = function()
+				local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+				local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+				function message(text)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				task.spawn(function()
-					local msg = Instance.new("Message",workspace)
-					msg.Text = tostring(text)
-					task.wait(5)
-					msg:Destroy()
-				end)
-			end
+					task.spawn(function()
+						local msg = Instance.new("Message",workspace)
+						msg.Text = tostring(text)
+						task.wait(5)
+						msg:Destroy()
+					end)
+				end
 
-			function normalmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function normalmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
-				)
-			end
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
+					)
+				end
 
-			function confirmnotification(title, text, timee, callback)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function confirmnotification(title, text, timee, callback)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
-				)
-			end 
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
+					)
+				end 
 
-			function warnmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
-				)
-			end
+				function warnmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
+					)
+				end
 
-			local teleported = false
-			repeat
-				for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
-					if v:FindFirstChild("DoorHitbox") then
-						if v.DoorHitbox:FindFirstChild("BillboardGui") then
-							if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
-								if not v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
-									if v.DoorHitbox.BillboardGui.Title.Text == "0 / 2" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12" then
-										repeat
-											game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
-											task.wait()
-										until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
-										teleported = true
-										break
+				local teleported = false
+				repeat
+					for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
+						if v:FindFirstChild("DoorHitbox") then
+							if v.DoorHitbox:FindFirstChild("BillboardGui") then
+								if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
+									if not v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
+										if v.DoorHitbox.BillboardGui.Title.Text == "0 / 2" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12" then
+											repeat
+												game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
+												task.wait()
+											until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
+											teleported = true
+											break
+										end
 									end
 								end
 							end
 						end
 					end
+					task.wait(1)
+					if teleported == false then
+						normalmessage("MAXED", "Duo elevators are full, retrying...", 2)
+					end
+				until teleported == true
+				normalmessage("MAXED", "Joining...", 10)		end,
+		})
+
+		local Button = retab:CreateButton({
+			Name = "Join Squad",
+		SectionParent = elevatorsection,
+			Callback = function()
+				local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+				local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+				function message(text)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
+
+					task.spawn(function()
+						local msg = Instance.new("Message",workspace)
+						msg.Text = tostring(text)
+						task.wait(5)
+						msg:Destroy()
+					end)
 				end
-				task.wait(1)
-				if teleported == false then
-					normalmessage("MAXED", "Duo elevators are full, retrying...", 2)
+
+				function normalmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
+
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
+					)
 				end
-			until teleported == true
-			normalmessage("MAXED", "Joining...", 10)		end,
-	})
 
-	local Button = retab:CreateButton({
-		Name = "Join Squad",
-		Callback = function()
-			local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-			local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-			function message(text)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function confirmnotification(title, text, timee, callback)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				task.spawn(function()
-					local msg = Instance.new("Message",workspace)
-					msg.Text = tostring(text)
-					task.wait(5)
-					msg:Destroy()
-				end)
-			end
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
+					)
+				end 
 
-			function normalmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function warnmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
+					)
+				end
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
-				)
-			end
-
-			function confirmnotification(title, text, timee, callback)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
-
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
-				)
-			end 
-
-			function warnmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
-				)
-			end
-
-			local teleported = false
-			repeat
-				for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
-					if v:FindFirstChild("DoorHitbox") then
-						if v.DoorHitbox:FindFirstChild("BillboardGui") then
-							if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
-								if not v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
-									if v.DoorHitbox.BillboardGui.Title.Text == "0 / 4" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12" then
-										repeat
-											game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
-											task.wait()
-										until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
-										teleported = true
-										break
+				local teleported = false
+				repeat
+					for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
+						if v:FindFirstChild("DoorHitbox") then
+							if v.DoorHitbox:FindFirstChild("BillboardGui") then
+								if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
+									if not v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
+										if v.DoorHitbox.BillboardGui.Title.Text == "0 / 4" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12" then
+											repeat
+												game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
+												task.wait()
+											until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
+											teleported = true
+											break
+										end
 									end
 								end
 							end
 						end
 					end
-				end
-				task.wait(1)
-				if teleported == false then
-					normalmessage("MAXED", "Squad elevators are full, retrying...", 2)
-				end
-			until teleported == true
-			normalmessage("MAXED", "Joining...", 10)		end,
-	})
+					task.wait(1)
+					if teleported == false then
+						normalmessage("MAXED", "Squad elevators are full, retrying...", 2)
+					end
+				until teleported == true
+				normalmessage("MAXED", "Joining...", 10)		end,
+		})
 
-	local Button = retab:CreateButton({
+		local Button = retab:CreateButton({
 		Name = "Join Super Hard Mode",
-		Callback = function()
-			local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-			local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-			function message(text)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+		SectionParent = elevatorsection,
+			Callback = function()
+				local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+				local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+				function message(text)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				task.spawn(function()
-					local msg = Instance.new("Message",workspace)
-					msg.Text = tostring(text)
-					task.wait(5)
-					msg:Destroy()
-				end)
-			end
+					task.spawn(function()
+						local msg = Instance.new("Message",workspace)
+						msg.Text = tostring(text)
+						task.wait(5)
+						msg:Destroy()
+					end)
+				end
 
-			function normalmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function normalmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
-				)
-			end
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "default"}
+					)
+				end
 
-			function confirmnotification(title, text, timee, callback)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
+				function confirmnotification(title, text, timee, callback)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 3;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
 
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
-				)
-			end 
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80), Time = timee or 10, Type = "option"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = callback or function(state)end}
+					)
+				end 
 
-			function warnmessage(title, text, timee)
-				task.spawn(function()
-					local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
-				end)
-				Notification:Notify(
-					{Title = title, Description = text},
-					{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
-					{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
-				)
-			end
+				function warnmessage(title, text, timee)
+					task.spawn(function()
+						local notif = Instance.new("Sound");notif.Parent = game.SoundService;notif.SoundId = "rbxassetid://4590657391";notif.Volume = 5;notif:Play();notif.Stopped:Wait();notif:Destroy()
+					end)
+					Notification:Notify(
+						{Title = title, Description = text},
+						{OutlineColor = Color3.fromRGB(80, 80, 80),Time = timee or 5, Type = "image"},
+						{Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84)}
+					)
+				end
 
-			local teleported = false
-			repeat
-				for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
-					if v:FindFirstChild("DoorHitbox") then
-						if v.DoorHitbox:FindFirstChild("BillboardGui") then
-							if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
-								if v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
-									if v.DoorHitbox.BillboardGui.Warning.Text == "SUPER HARD MODE!!!" and (v.DoorHitbox.BillboardGui.Title.Text == "0 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12") then
-										repeat
-											game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
-											task.wait()
-										until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
-										teleported = true
-										break
+				local teleported = false
+				repeat
+					for _,v in pairs(game:GetService("Workspace").Lobby.LobbyElevators:GetChildren()) do
+						if v:FindFirstChild("DoorHitbox") then
+							if v.DoorHitbox:FindFirstChild("BillboardGui") then
+								if v.DoorHitbox.BillboardGui:FindFirstChild("Title") then
+									if v.DoorHitbox.BillboardGui:FindFirstChild("Warning") then
+										if v.DoorHitbox.BillboardGui.Warning.Text == "SUPER HARD MODE!!!" and (v.DoorHitbox.BillboardGui.Title.Text == "0 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "0 / 12") then
+											repeat
+												game.Players.LocalPlayer.Character:PivotTo(v.DoorHitbox.CFrame)
+												task.wait()
+											until v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.DisplayName) or v.DoorHitbox.BillboardGui.Players:FindFirstChild(game.Players.LocalPlayer.Name) --v.DoorHitbox.BillboardGui.Title.Text == "1 / 1" or v.DoorHitbox.BillboardGui.Title.Text == "1 / 12"
+											teleported = true
+											break
+										end
 									end
 								end
 							end
 						end
 					end
-				end
-				task.wait(1)
-				if teleported == false then
-					normalmessage("MAXED", "SUPER HARD MODE elevator are full, retrying...", 2)
-				end
-			until teleported == true
-			normalmessage("MAXED", "Joining...", 10)		end,
-	})
+					task.wait(1)
+					if teleported == false then
+						normalmessage("MAXED", "SUPER HARD MODE elevator are full, retrying...", 2)
+					end
+				until teleported == true
+				normalmessage("MAXED", "Joining...", 10)		end,
+		})
 
 
 	end
-	end
-
 
 
 
