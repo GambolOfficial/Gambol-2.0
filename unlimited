@@ -401,6 +401,9 @@ if game.PlaceId == 6839171747 then
 		autorooms = nil,
 		autorooms_debug = nil,
 		autorooms_blockcontrols = nil,
+		
+		-- Fools
+		fools = nil,
 
 		-- trolling
 		dropdowntrolling = nil
@@ -897,6 +900,9 @@ if game.PlaceId == 6839171747 then
 		CurrentValue = false,
 		Flag = "espdoor", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
+			
+			
+			
 			flags.espdoors = val
 
 			if val then
@@ -1877,17 +1883,25 @@ if game.PlaceId == 6839171747 then
 		end
 	end)
 	buttons.noseekarmsfire = noseekarmsfirebtn
-	
+	local floor = game:GetService("ReplicatedStorage").GameData.Floor.Value
+
 
 	local Label = MainTab:CreateLabel("Press this only if you have the\nbreaker box minigame on.")
-
+	local floor = game:GetService("ReplicatedStorage").GameData.Floor.Value
+	if floor == "Fools" then
+		buttons.fools = true
+	else buttons.fools = false
+	end
 	local Section = MainTab:CreateSection("Interactables")
 	local nogoldbtn = MainTab:CreateToggle({
+		
 		Name = "Ignore Gold In Loot Aura",
-		CurrentValue = false,
+		CurrentValue = buttons.fools,
 		Flag = "nogold", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(val, oldval)
 			flags.nogold = val
+
+
 		end,
 	})
 	flags.nogold = nogoldbtn
